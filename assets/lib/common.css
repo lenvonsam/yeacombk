@@ -1,0 +1,10 @@
+@charset "utf-8";
+
+.ql-snow .ql-picker-label::before {
+    position: relative !important;
+    top: -10px !important;
+}
+.ql-toolbar.ql-snow .ql-picker-label {
+    position: relative !important;
+    top: -5px !important;
+}

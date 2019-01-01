@@ -1,0 +1,67 @@
+@charset "utf-8"
+@require "./basic"
+
+.bk-container
+  height 100vh
+  .bk-sidebar
+    float left
+    width  200px 
+    height 100%
+    box-sizing border-box
+    overflow-y auto
+    overflow-x hidden
+    background #2f4050
+    animation all 0.3s
+    &::-webkit-scrollbar
+      width 6px
+      bakground-color #F5F5F5
+    &::-webkit-scrollbar-thumb
+      border-radius 3px
+      background-color #999
+    &::-webkit-scrollbar-track
+      background-color #555
+    &::-webkit-scrollbar-corner
+      display none
+    &.toggle
+      width 64px
+    .el-menu
+      border-right 0px
+  .bk-content
+    display flex
+    height 100%
+    flex-direction column
+    overflow hidden
+    background-color #f3f3f4
+    .header
+      box-sizing border-box
+      background #fff
+      flex 0 0 60px
+      display flex 
+      align-items center
+      .avatar
+        width 46px
+        height 46px
+        border-radius 23px
+        &:hover
+          cursor pointer
+    .box-wrap
+      position relative
+      flex 1
+      .box
+        position absolute
+        top 0
+        left 0
+        right 0
+        bottom 0
+        overflow auto
+        box-sizing border-box
+        padding 15px 15px
+        .ibox
+          background-color #fff
+          box-sizing border-box
+          .ibox-title
+            border-top 4px solid #e7eaec
+            padding 15px 15px
+          .ibox-content
+            border-top 1px solid #e7eaec
+            padding 15px 15px
