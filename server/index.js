@@ -14,7 +14,7 @@ const app = new Koa()
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 4000
 // const bkProxyUrl = 'http://localhost:8668'
-const bkProxyUrl = 'http://192.168.0.105:8668'
+const bkProxyUrl = 'http://47.105.170.16:8080/yeacom-server'
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -68,19 +68,27 @@ async function start() {
       }
     }),
     async ctx => {
-      console.log('filePath>>', typeof ctx.request.files)
+      console.log('reqbody', ctx.request.body)
       console.log('filepath:>>', ctx.request.files.img.path)
+      // ctx.body = {
+      //   code: 0,
+      //   data: { url: 'xxx' }
+      // }
+      // return
+      let reqBody = ctx.request.body
       let data = await fileRequst({
         formData: {
-          file: fs.createReadStream(ctx.request.files.img.path)
+          file: fs.createReadStream(ctx.request.files.img.path),
+          prefix: reqBody.action || ''
         },
         headers: {
-          Authorization:
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NDY1MzYyMzEsInVzZXJuYW1lIjoiYWRtaW4ifQ.9pFxHTsXnV1Sy1IIKACEzq9PH2xjNsysahAT1-rX73s'
+          Authorization: ctx.session.usertk
         }
       })
       console.log('resp data', data)
       // 'http://pic1.win4000.com/wallpaper/3/53e1baf5d6ce4.jpg'
+      if (data.status == 403 && data.error == 'Forbidden')
+        delete ctx.session.currentUser
       ctx.body = {
         code: 0,
         data: { url: data.filePath }
@@ -111,6 +119,7 @@ async function start() {
         }
         delete data.token
       }
+      if (data.status == 403 && data.error == 'Forbidden') delete ctx.session.currentUser
       ctx.body = data
     } catch (e) {
       console.error(e)

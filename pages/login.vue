@@ -16,6 +16,7 @@ el-form.login-form(:model="userForm", :rules="userRules", ref="userRuleForm")
 
 <script>
 import sha1 from 'sha1'
+import { mapActions } from 'vuex'
 export default {
   data: function() {
     return {
@@ -40,6 +41,7 @@ export default {
     document.body.className = 'login-container'
   },
   methods: {
+    ...mapActions(['setUser']),
     forgetPwd() {
       // TODO 以后再做
       console.log('忘记密码')
@@ -68,7 +70,10 @@ export default {
             }
           }
         })
+        console.log('login data', data)
         if (data.return_code == 0) {
+          console.log('登录成功')
+          this.setUser(data.user)
           this.jump({ path: '/' })
         } else {
           this.msgShow(this, data.message)
