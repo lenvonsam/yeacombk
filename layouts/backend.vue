@@ -28,4 +28,10 @@ export default {
 
 <style lang="stylus">
 @import "../assets/stylus/common"
+.product-preview 
+  img
+    width 100%
+  .ql-align-center
+    text-align center
+
 </style>

@@ -156,6 +156,9 @@ export default {
 </script>
 
 <style scoped>
+.product-preview img {
+  width: 100% !important;
+}
 .commbackend-expand-form {
   font-size: 0px;
 }
