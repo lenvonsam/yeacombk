@@ -1,5 +1,5 @@
 <template lang="pug">
-  .bkd-box
+  .box
     .padding
       el-row
         el-col(:span="12")
@@ -76,7 +76,7 @@ export default {
         data.return_code === 0
           ? (this.tableData = data.list)
           : this.msgShow(this, data.errMsg)
-        if (data.returnCode === 0) this.totalCount = data.totalCount
+        if (data.return_code === 0) this.totalCount = data.total
       } catch (err) {
         this.msgShow(this, '网络异常')
       }
