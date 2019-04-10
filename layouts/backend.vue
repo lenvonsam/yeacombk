@@ -31,7 +31,7 @@ export default {
 .product-preview 
   img
     width 100%
-  .ql-align-center
-    text-align center
+.ql-header.ql-picker .ql-picker-label
+  top 0px !important
 
 </style>

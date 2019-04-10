@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import elementUtil from '../utils/elemtUtil'
+import apiList from '../utils/apiList'
+const APILIST = apiList.api()
 
 function formatNumber(n) {
   n = n.toString()
@@ -7,6 +9,11 @@ function formatNumber(n) {
 }
 
 const minixs = {
+  data() {
+    return {
+      apiList: APILIST
+    }
+  },
   watch: {
     '$store.state.globalSuccessMsg'(newVal, oldVal) {
       if (newVal !== '') this.msgShow(this, newVal, 'success')
@@ -32,8 +39,37 @@ const minixs = {
         return ''
       }
     },
+    One2DArray(originArray, len = 3, autoComplete = true) {
+      let row =
+        originArray.length % len == 0
+          ? originArray.length / len
+          : Math.ceil(originArray.length / len)
+      let arr = []
+      for (var i = 0; i < row; i++) {
+        if (i == row - 1 && i * len < originArray.length - 1) {
+          // 最后一行
+          let tempArr = []
+          let startIdx = i * len
+          for (var j = startIdx; j < originArray.length; j++) {
+            tempArr.push(originArray[j])
+          }
+          if (autoComplete) {
+            for (var x = 0; x < len - tempArr.length; x++) {
+              tempArr.push('')
+            }
+          }
+          arr.push(tempArr)
+        } else {
+          arr.push([
+            originArray[i * len],
+            originArray[i * len + 1],
+            originArray[i * len + 2]
+          ])
+        }
+      }
+      return arr
+    },
     request(ctx, config) {
-      console.log('domain:>', window.location.host)
       return ctx.$axios({
         method: 'post',
         url: 'http://' + window.location.host + config.url,

@@ -1,12 +1,12 @@
 <template lang="pug">
 el-form.login-form(:model="userForm", :rules="userRules", ref="userRuleForm")
   el-form-item
-    h2.text-center 怡康集团管理系统
+    h2.text-center XXX云后台
   el-form-item(prop="username")
     el-input(placeholder="请输入用户名", v-model="userForm.username")
       i.fa.fa-user-circle-o.mr-5(slot="suffix")
   el-form-item.mb-5(prop="pwd")
-    el-input(placeholder="请输入密码", v-model="userForm.pwd", type="password")
+    el-input(placeholder="请输入密码", v-model="userForm.pwd", type="password", @keyup.enter.native="loginAdmin")
       i.fa.fa-unlock-alt(slot="suffix", style="margin-right: 8px")
     //- .text-right
       span.ft-12.text-gray.login-forget(style="margin-right: 2px", @click="forgetPwd") 忘记密码?
@@ -62,7 +62,7 @@ export default {
         let { data } = await this.request(this, {
           url: '/proxy',
           params: {
-            url: '/admin/login',
+            url: this.apiList.login,
             method: 'post',
             params: {
               username: this.userForm.username,
