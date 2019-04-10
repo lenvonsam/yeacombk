@@ -11,8 +11,6 @@
     el-dropdown(@command="topDrowdown")
       img.avatar(:src="avatar")
       el-dropdown-menu.text-center(slot="dropdown")
-        //- el-dropdown-item.border-bottom-line(command="profile") 个人中心
-        el-dropdown-item(command="bucketList", v-if="(currentUser.buckets.length > 1 || currentUser.acctLevel == 3)") 空间切换
         el-dropdown-item(command="exit") 退出
 </template>
 

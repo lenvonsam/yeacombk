@@ -3,7 +3,7 @@
   .bk-content
     .header.row.border-bottom-line
       .flex-200
-        .top-brand 云管理平台
+        .top-brand XXCMS平台
       .flex-120
         h3(@click="jump({path: '/news'})") {{currentUser.currentBucket.name}}
       .col

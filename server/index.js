@@ -13,7 +13,7 @@ const session = require('koa-session')
 const app = new Koa()
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 4000
-const bkProxyUrl = 'http://localhost:8668'
+const bkProxyUrl = 'http://172.16.16.201:8668'
 const APILIST = require('../utils/apiList').api()
 // const bkProxyUrl = 'http://47.105.170.16:8080/yeacom-server'
 

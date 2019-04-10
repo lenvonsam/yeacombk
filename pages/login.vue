@@ -1,7 +1,7 @@
 <template lang="pug">
 el-form.login-form(:model="userForm", :rules="userRules", ref="userRuleForm")
   el-form-item
-    h2.text-center XXX云后台
+    h2.text-center XXXCMS
   el-form-item(prop="username")
     el-input(placeholder="请输入用户名", v-model="userForm.username")
       i.fa.fa-user-circle-o.mr-5(slot="suffix")
@@ -45,16 +45,6 @@ export default {
     forgetPwd() {
       // TODO 以后再做
       console.log('忘记密码')
-    },
-    formSubmit() {
-      this.$refs['userRuleForm'].validate(valid => {
-        if (valid) {
-          console.log('通过该')
-        } else {
-          console.error('valid error')
-          return
-        }
-      })
     },
     async loginAdmin() {
       try {

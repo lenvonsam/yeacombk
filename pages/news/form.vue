@@ -47,11 +47,11 @@ export default {
       articleObj: {
         title: '',
         tag: '',
-        source: '怡康房产',
+        source: '',
         thumbUrl: '',
         isOutLink: false,
         outLinkUrl: '',
-        author: '怡康房产',
+        author: '',
         content: '',
         time: this.date2Str(new Date())
       },
