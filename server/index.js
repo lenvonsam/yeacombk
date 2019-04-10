@@ -34,26 +34,6 @@ async function start() {
   app.use(bodyParser())
   app.use(session(config.sessionConfig, app))
   let router = new Router()
-  // router.get('/hello', async ctx => {
-  //   console.log(ctx.session)
-  //   let keys = Object.keys(ctx.session)
-  //   console.log('session keys', ctx.session.text)
-  //   if (ctx.session.currentUser) {
-  //     console.log('session exist', ctx.session)
-  //   } else {
-  //     console.log('没有值')
-  //     ctx.session = {
-  //       currentUser: {
-  //         id: 1,
-  //         name: '133123'
-  //       }
-  //     }
-  //   }
-
-  //   ctx.body = {
-  //     return_code: 0
-  //   }
-  // })
 
   router.post('/logout', async ctx => {
     if (ctx.session.currentUser) delete ctx.session.currentUser

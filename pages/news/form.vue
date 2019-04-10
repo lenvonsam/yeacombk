@@ -7,7 +7,7 @@
 					el-form-item(label="新闻标题", prop="title")
 						el-input(v-model="articleObj.title")
 					el-form-item(label="新闻来源", prop="source")
-						el-input(v-model="articleObj.source", placeholder="怡康房产")
+						el-input(v-model="articleObj.source", placeholder="百姓网")
 					el-form-item(label="新闻作者", prop="author")
 						el-input(v-model="articleObj.author")
 					el-form-item(label="发布时间", prop="time")
