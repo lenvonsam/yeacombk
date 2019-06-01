@@ -114,11 +114,13 @@ export default {
     // },
     async loadArticle() {
       try {
+        this.pageShow(this)
         let { data } = await this.proxy(
           this,
           '/backend/article/' + this.$route.query.tid
         )
         console.log(data.article)
+        this.pageHide(this)
         if (data.return_code === 0) {
           let obj = {
             title: data.article.title,
@@ -138,6 +140,7 @@ export default {
         }
       } catch (err) {
         console.log(err)
+        this.pageHide(this)
         this.msgShow(this, '获取新闻异常')
       }
     },

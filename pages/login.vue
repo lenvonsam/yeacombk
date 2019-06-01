@@ -1,7 +1,7 @@
 <template lang="pug">
 el-form.login-form(:model="userForm", :rules="userRules", ref="userRuleForm")
   el-form-item
-    h2.text-center XXX云后台
+    h2.text-center 怡康控股管理系统
   el-form-item(prop="username")
     el-input(placeholder="请输入用户名", v-model="userForm.username")
       i.fa.fa-user-circle-o.mr-5(slot="suffix")

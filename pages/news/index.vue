@@ -67,17 +67,20 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.pageShow(this)
         let { data } = await this.proxy(this, '/backend/article', 'post', {
           bid: this.currentUser.currentBucket.id,
           pageSize: this.pageSize,
           currentPage: this.currentPage - 1
         })
         console.log('new list data', data)
+        this.pageHide(this)
         data.return_code === 0
           ? (this.tableData = data.list)
           : this.msgShow(this, data.errMsg)
         if (data.return_code === 0) this.totalCount = data.total
       } catch (err) {
+        this.pageHide(this)
         this.msgShow(this, '网络异常')
       }
     },
