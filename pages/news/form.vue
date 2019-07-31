@@ -17,6 +17,8 @@
 							el-option(v-for="(t,tidx) in articleTags", :key="tidx", :label="t.name", :value="t.id")
 					el-form-item(label="新闻缩略图", prop="thumbUrl")
 						single-pic-upload(v-model="articleObj.thumbUrl")
+					el-form-item(label="发布顺序", prop="factOrder")
+						el-input-number(v-model="articleObj.factOrder",size="medium", :min="1")
 					el-form-item(label="是否外链")
 						el-switch(v-model="articleObj.isOutLink",on-text="是",off-text="否")
 					el-form-item(label="外链地址",prop="outLinkUrl",v-show="articleObj.isOutLink")
@@ -51,6 +53,7 @@ export default {
         thumbUrl: '',
         isOutLink: false,
         outLinkUrl: '',
+        factOrder: 1,
         author: '怡康房产',
         content: '',
         time: this.date2Str(new Date())
@@ -129,7 +132,8 @@ export default {
             thumbUrl: data.article.images.url,
             time: this.date2Str(new Date(data.article.publishTime)),
             tag: data.article.tags.map(itm => itm.id),
-            isOutLink: data.article.link
+            isOutLink: data.article.link,
+            factOrder: data.article.factOrder
           }
           data.article.link
             ? (obj.outLinkUrl = data.article.linkUrl)
@@ -231,7 +235,8 @@ export default {
           // tagIds: me.articleObj.tag.join(','),
           tagIds: '1',
           bucketId: me.currentUser.currentBucket.id,
-          link: me.articleObj.isOutLink
+          link: me.articleObj.isOutLink,
+          factOrder: me.articleObj.factOrder
         }
 
         me.articleObj.isOutLink
