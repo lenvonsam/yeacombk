@@ -24,7 +24,7 @@
               template(slot-scope="scope")
                 el-tag(v-for="itm in scope.row.tags", size="mini", type="info", :key="itm.id") {{itm.name}}
             el-table-column(label="发布时间", :formatter="dateFormatter")
-            el-table-column(label="发布顺序", prop="factOrder")
+            //- el-table-column(label="发布顺序", prop="factOrder")
             el-table-column(label="操作", width="150")
               template(slot-scope="scope")
                 el-button(size="small", @click="openDetailDialog(scope.row)") 详情

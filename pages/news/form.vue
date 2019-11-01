@@ -17,7 +17,7 @@
 							el-option(v-for="(t,tidx) in articleTags", :key="tidx", :label="t.name", :value="t.id")
 					el-form-item(label="新闻缩略图", prop="thumbUrl")
 						single-pic-upload(v-model="articleObj.thumbUrl")
-					el-form-item(label="发布顺序", prop="factOrder")
+					//- el-form-item(label="发布顺序", prop="factOrder")
 						el-input-number(v-model="articleObj.factOrder",size="medium", :min="1")
 					el-form-item(label="是否外链")
 						el-switch(v-model="articleObj.isOutLink",on-text="是",off-text="否")
