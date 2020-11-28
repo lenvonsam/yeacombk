@@ -14,5 +14,5 @@ WORKDIR /yeacombk
 #RUN git checkout stage
 #RUN git pull origin stage
 #RUN rm -rf package-lock.json && npm install
-EXPOSE 6686
+EXPOSE 4000
 CMD [ "npm", "run", "docker" ]
