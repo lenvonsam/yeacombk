@@ -1,7 +1,7 @@
 <template lang="pug">
 el-form.login-form(:model="userForm", :rules="userRules", ref="userRuleForm")
   el-form-item
-    h2.text-center 怡康控股管理系统
+    h2.text-center 怡康控股管理系统(beta)
   el-form-item(prop="username")
     el-input(placeholder="请输入用户名", v-model="userForm.username")
       i.fa.fa-user-circle-o.mr-5(slot="suffix")
@@ -87,28 +87,23 @@ export default {
 </script>
 
 <style lang="stylus">
-.login-container {
-  background-image: url('~assets/imgs/yc_bg.jpg');
-  height: 100vh;
-  position: relative;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  .login-form {
-    position: absolute;
-    width: 420px;
+.login-container
+  background-image url('~assets/imgs/yc_bg.jpg')
+  height 100vh
+  position relative
+  background-repeat no-repeat
+  background-size cover
+  .login-form
+    position absolute
+    width 420px
     // height 400px
-    right: 5%;
-    top: 20%;
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 3px;
-    box-shadow: 0 3px 0 rgba(12, 12, 12, 0.03);
-    padding: 30px;
-
-    .login-forget:hover {
-      cursor: pointer;
-    }
-  }
-}
+    right 5%
+    top 20%
+    background rgba(255, 255, 255, 0.6)
+    border 1px solid rgba(255, 255, 255, 0.7)
+    border-radius 3px
+    box-shadow 0 3px 0 rgba(12, 12, 12, 0.03)
+    padding 30px
+    .login-forget:hover
+      cursor pointer
 </style>
