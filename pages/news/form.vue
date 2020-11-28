@@ -12,7 +12,7 @@
 						el-input(v-model="articleObj.author")
 					el-form-item(label="发布时间", prop="time")
 						el-date-picker(type="date", v-model="articleObj.time", :clearable="false", value-format="yyyy-MM-dd")
-					//- el-form-item(label="新闻标签", prop="tag")
+					el-form-item(label="新闻分类", prop="tag")
 						el-select(v-model="articleObj.tag", multiple)
 							el-option(v-for="(t,tidx) in articleTags", :key="tidx", :label="t.name", :value="t.id")
 					el-form-item(label="新闻缩略图", prop="thumbUrl")
@@ -97,7 +97,7 @@ export default {
     }
   },
   beforeMount() {
-    // this.initTags()
+    this.initTags()
     if (this.$route.query.tid) this.loadArticle()
   },
   methods: {
@@ -156,7 +156,7 @@ export default {
         )
         console.log('tags', data)
         data.return_code === 0
-          ? (this.articleTags = data.tags)
+          ? (this.articleTags = data.list)
           : this.msgShow(this, data.errMsg)
         if (data.return_code === 0)
           this.articleObj.tag = [this.articleTags[0].id]
@@ -232,13 +232,12 @@ export default {
           author: me.articleObj.author,
           thumbUrl: me.articleObj.thumbUrl,
           artTime: me.articleObj.time,
-          // tagIds: me.articleObj.tag.join(','),
-          tagIds: '1',
+          tagIds: me.articleObj.tag.join(','),
+          // tagIds: '1',
           bucketId: me.currentUser.currentBucket.id,
           link: me.articleObj.isOutLink,
           factOrder: me.articleObj.factOrder
         }
-
         me.articleObj.isOutLink
           ? (articleObject.linkUrl = me.articleObj.outLinkUrl)
           : (articleObject.articleDetail = me.articleObj.content)

@@ -4,8 +4,10 @@
       el-row
         el-col(:span="12")
           el-button-group
-            el-button(type="primary", @click="jump({path: '/news/form'})") 新增
-            el-button(type="danger", @click="batchDel") 删除
+            el-button(type="primary", @click="jump({path: '/recruit/form'})") 新增
+            el-button(type="warning", @click="batchAction(1)") 上架
+            el-button(type="danger", @click="batchAction(2)") 下架
+            //- el-button(type="danger", @click="batchDel") 删除
             //- el-button(type="info",@click="handleDownload") 导出
         el-col.text-right(:span="12")
           //- el-input(v-model="searchTitle", placeholder="标题")
@@ -14,27 +16,41 @@
         el-col(:span="24", style="padding-top:15px")
           el-table(:data="tableData",border,tooltip-effect="dark", style="width:100%", @selection-change="handleSelectionChange")
             el-table-column(type="selection",width="55")
-            el-table-column(label="缩略图", width="150")
-              template(slot-scope="scope")
-                img.full-width(:src="getRowImage(scope.row)")
-            el-table-column(label="标题",prop="title")
-            el-table-column(label="来源",prop="source")
-            el-table-column(label="作者",prop="author")
-            el-table-column(label="分类")
+            el-table-column(label="职位", width="150", prop="job")
+            el-table-column(label="公司",prop="company")
+            el-table-column(label="地点",prop="location")
+            el-table-column(label="薪资",prop="salaryDescription")
+            //- el-table-column(label="标签")
               template(slot-scope="scope")
                 el-tag(v-for="itm in scope.row.tags", size="mini", type="info", :key="itm.id") {{itm.name}}
             el-table-column(label="发布时间", :formatter="dateFormatter")
             //- el-table-column(label="发布顺序", prop="factOrder")
+            el-table-column(label="优先级", prop="factOrder")
+            el-table-column(label="状态")
+              template(slot-scope="scope")
+                el-tag {{recruitStatusInfo(scope.row.status)}}
             el-table-column(label="操作", width="150")
               template(slot-scope="scope")
                 el-button(size="small", @click="openDetailDialog(scope.row)") 详情
-                el-button.ml-10(size="small", @click="jump({path: '/news/form?tid=' + scope.row.id})") 编辑
+                el-button.ml-10(size="small", @click="jump2Detail(scope.row)") 编辑
       .pt-10
         el-pagination.text-right(@current-change="handleCurrentChange", :current-page="currentPage", :total="totalCount", :page-size="pageSize", background, layout="prev, pager, next, jumper")
-    el-dialog(title="新闻详情", width="70%", :visible.sync="dialogShow")
-      iframe.full-width(frameborder="0", scrolling="auto", height="500px", v-if="chooseObj.link", :src="'http://' + chooseObj.linkUrl")
-      .product-preview(v-else, v-html="chooseObj.articleDetail")
-      .dialog-footer(slot="footer")
+    el-dialog(title="招聘详情", width="70%", :visible.sync="dialogShow")
+      el-form(:inline="true")
+       .row 
+        .col
+          el-form-item(label="岗位")
+            el-input(readOnly, :value="chooseObj.job")
+        .col
+          el-form-item(label="薪酬")
+            el-input(readOnly, :value="chooseObj.salaryDescription")
+        .col
+          el-form-item(label="地点")
+            el-input(readOnly, :value="chooseObj.location")
+      .row
+        el-label 招聘要求
+      .padding.mt-15.mb-15(style="border:1px solid #dcdfe6; border-radius: 4px; width: 90%") {{chooseObj.requireDetail}}
+      .row
         el-button(@click="dialogShow = false", type="primary") 关闭
 </template>
 
@@ -69,7 +85,7 @@ export default {
     async loadData() {
       try {
         this.pageShow(this)
-        let { data } = await this.proxy(this, '/backend/article', 'post', {
+        let { data } = await this.proxy(this, '/backend/recruit', 'post', {
           bid: this.currentUser.currentBucket.id,
           pageSize: this.pageSize,
           currentPage: this.currentPage - 1
@@ -95,6 +111,25 @@ export default {
       let obj = Object.assign({}, row.images)
       console.log(JSON.stringify(obj.id))
       return obj.url
+    },
+    batchAction(type) {
+      if (this.chooseData.length === 0) {
+        this.msgShow(this, '请选择操作行')
+        return
+      }
+      const ids = this.chooseData.map(item => item.id).join(',')
+      switch (type) {
+        // 上架
+        case 1:
+          this.remoteBatchUpdate(1, ids)
+          break
+        // 下架
+        case 2:
+          this.remoteBatchUpdate(2, ids)
+          break
+        default:
+          break
+      }
     },
     batchDel() {
       if (this.chooseData.length === 0) {
@@ -132,6 +167,24 @@ export default {
       this.currentPage = val
       this.loadData()
     },
+    recruitStatusInfo(status) {
+      console.log('status:>>', status)
+      switch (status) {
+        case 1:
+          return '上架'
+        case 2:
+          return '下架'
+        default:
+          return '草稿'
+      }
+    },
+    jump2Detail(obj) {
+      if (obj.status === 1) {
+        this.msgShow(this, '已上架无法修改')
+        return
+      }
+      this.jump({ path: '/recruit/form?tid=' + obj.id })
+    },
     handleDownload() {
       const me = this
       // require.ensure([], () => {
@@ -142,6 +195,32 @@ export default {
       //   const data = me.formatJson(filterVal, list)
       //   export_json_to_excel(tHeader, data, '列表_excel')
       // })
+    },
+    async remoteBatchUpdate(status, ids) {
+      try {
+        this.pageShow(this)
+        const { data } = await this.proxy(
+          this,
+          '/backend/recruit/batchAction',
+          'post',
+          {
+            mark: status,
+            bid: this.currentUser.currentBucket.id,
+            ids: ids
+          }
+        )
+        this.pageHide(this)
+        if (data.return_code === 0) {
+          this.msgShow(this, '操作成功', 'success')
+          this.currentPage = 1
+          this.loadData()
+        } else {
+          this.msgShow(this, data.message)
+        }
+      } catch (e) {
+        console.log(e)
+        this.pageHide(this)
+      }
     },
     formatJson(filterVal, jsonData) {
       const me = this

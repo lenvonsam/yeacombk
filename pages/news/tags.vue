@@ -4,8 +4,7 @@
       el-row
         el-col(:span="12")
           el-button-group
-            el-button(type="primary", @click="jump({path: '/news/form'})") 新增
-            el-button(type="danger", @click="batchDel") 删除
+            el-button(type="primary", @click="actionBtn('create')") 新增
             //- el-button(type="info",@click="handleDownload") 导出
         el-col.text-right(:span="12")
           //- el-input(v-model="searchTitle", placeholder="标题")
@@ -13,29 +12,22 @@
       el-row
         el-col(:span="24", style="padding-top:15px")
           el-table(:data="tableData",border,tooltip-effect="dark", style="width:100%", @selection-change="handleSelectionChange")
-            el-table-column(type="selection",width="55")
-            el-table-column(label="缩略图", width="150")
-              template(slot-scope="scope")
-                img.full-width(:src="getRowImage(scope.row)")
-            el-table-column(label="标题",prop="title")
-            el-table-column(label="来源",prop="source")
-            el-table-column(label="作者",prop="author")
-            el-table-column(label="分类")
-              template(slot-scope="scope")
-                el-tag(v-for="itm in scope.row.tags", size="mini", type="info", :key="itm.id") {{itm.name}}
-            el-table-column(label="发布时间", :formatter="dateFormatter")
-            //- el-table-column(label="发布顺序", prop="factOrder")
+            el-table-column(label="名称",prop="name")
+            el-table-column(label="创建时间", :formatter="dateFormatter", prop="createAt")
+            el-table-column(label="更新时间", :formatter="dateFormatter", prop="updateAt")
             el-table-column(label="操作", width="150")
               template(slot-scope="scope")
-                el-button(size="small", @click="openDetailDialog(scope.row)") 详情
-                el-button.ml-10(size="small", @click="jump({path: '/news/form?tid=' + scope.row.id})") 编辑
+                el-button.ml-10(size="small", @click="actionBtn('edit', scope.row)") 编辑
       .pt-10
         el-pagination.text-right(@current-change="handleCurrentChange", :current-page="currentPage", :total="totalCount", :page-size="pageSize", background, layout="prev, pager, next, jumper")
-    el-dialog(title="新闻详情", width="70%", :visible.sync="dialogShow")
-      iframe.full-width(frameborder="0", scrolling="auto", height="500px", v-if="chooseObj.link", :src="'http://' + chooseObj.linkUrl")
-      .product-preview(v-else, v-html="chooseObj.articleDetail")
+    el-dialog(title="分类编辑",:visible.sync="dialogShow", width="40%")
+      el-form
+        el-form-item(label="名称")
+          el-input(placeholder="请输入文章大类", v-model="chooseObj.name", style="width: 60%")
       .dialog-footer(slot="footer")
-        el-button(@click="dialogShow = false", type="primary") 关闭
+        el-button(@click="tagSave", type="primary") 确定
+        el-button(@click="dialogShow = false") 取消
+
 </template>
 
 <script>
@@ -66,10 +58,55 @@ export default {
     })
   },
   methods: {
+    actionBtn(type, obj) {
+      console.log('obj', obj)
+      switch (type) {
+        case 'create':
+          this.chooseObj = {}
+          this.dialogShow = true
+          break
+        case 'edit':
+          this.chooseObj = {
+            id: obj.id,
+            name: obj.name,
+            bucket: obj.bucket.id
+          }
+          this.dialogShow = true
+          break
+        default:
+          break
+      }
+    },
+    async tagSave() {
+      try {
+        this.pageShow(this)
+        if (!this.chooseObj.bucket)
+          this.chooseObj.bucket = this.currentUser.currentBucket.id
+        const { data } = await this.proxy(
+          this,
+          '/backend/articleTag/save',
+          'post',
+          this.chooseObj
+        )
+        this.pageHide(this)
+        if (data.return_code === 0) {
+          this.msgShow(this, '操作成功', 'success')
+          this.currentPage = 1
+          this.dialogShow = false
+          this.loadData()
+        } else {
+          this.msgShow(this, data.message)
+        }
+      } catch (e) {
+        console.error(e)
+        this.pageHide(this)
+        this.msgShow(this, e.message || '网络异常')
+      }
+    },
     async loadData() {
       try {
         this.pageShow(this)
-        let { data } = await this.proxy(this, '/backend/article', 'post', {
+        let { data } = await this.proxy(this, '/backend/articleTag', 'post', {
           bid: this.currentUser.currentBucket.id,
           pageSize: this.pageSize,
           currentPage: this.currentPage - 1
@@ -121,8 +158,8 @@ export default {
         })
         .catch(() => {})
     },
-    dateFormatter(row, column) {
-      let d = new Date(row.publishTime)
+    dateFormatter(row, column, cellValue, index) {
+      let d = new Date(cellValue)
       return this.date2Str(d)
     },
     handleSelectionChange(val) {

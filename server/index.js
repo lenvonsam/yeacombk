@@ -13,9 +13,10 @@ const session = require('koa-session')
 const app = new Koa()
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 4000
-// const bkProxyUrl = 'http://localhost:8668'
 const APILIST = require('../utils/apiList').api()
-const bkProxyUrl = 'http://47.105.170.16:8080/yeacom-server'
+// const bkProxyUrl = 'http://localhost:8668'
+const bkProxyUrl = 'http://showcase.thinkingsam.cn/yeacom-server'
+// const bkProxyUrl = 'http://47.105.170.16:8080/yeacom-server'
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -120,7 +121,8 @@ async function start() {
         }
         delete data.token
       }
-      if (data.status == 403 && data.error == 'Forbidden') delete ctx.session.currentUser
+      if (data.status == 403 && data.error == 'Forbidden')
+        delete ctx.session.currentUser
       ctx.body = data
     } catch (e) {
       console.error(e)

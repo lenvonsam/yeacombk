@@ -4,7 +4,7 @@
     el-button(@click="navSwitch", size="small", type="primary") 
       i.fa.fa-outdent
   .col
-    h2 新闻管理
+    h2 {{topTitle}}
   //- .col(style="flex: 0 0 85px")
     el-button(icon="el-icon-search", size="small") 搜索
   .col.flex-62
@@ -29,7 +29,14 @@ export default {
   computed: {
     ...mapState({
       currentUser: state => state.user.currentUser
-    })
+    }),
+    topTitle() {
+      const path = this.$route.path
+      const pathArr = ['/news', '/recruit']
+      const titleArr = ['新闻管理', '招聘管理']
+      const idx = pathArr.findIndex(item => item.startsWith(path))
+      return titleArr[idx < 0 ? 0 : idx]
+    }
   },
   beforeMount() {
     console.log('currentUser', this.currentUser)
@@ -61,7 +68,6 @@ export default {
 </script>
 
 <style lang="stylus", scoped>
-.flex-62 {
-  flex: 0 0 62px !important;
-}
+.flex-62
+  flex 0 0 62px !important
 </style>
