@@ -7,6 +7,7 @@ module.exports = {
       accountCreate: '/backend/account/create',
       accountUpdate: '/backend/account/update',
       accounts: '/backend/account',
+      accountRole: '/backend/account/bucket/roles',
       menus: '/backend/menu',
       parentMenus: '/backend/menu/parentMenus',
       menuCreate: '/backend/menu/create',

@@ -1,7 +1,7 @@
 <template lang="pug">
 .bk-sidebar(:class="{'toggle': navToggle}")
   el-menu(:collapse="navToggle", background-color="#2f4050", :unique-opened="true", text-color="#a7b1c2", active-text-color="#fff", :collapse-transition="false", :default-active="$route.path", router)
-    template(v-for="(menu, idx) in allMenus")
+    template(v-for="(menu, idx) in currentMenus")
       el-submenu(v-if="menu.items", :index="'-'+idx")
         template(slot="title")
           i(:class="menu.icon", v-if="menu.icon")
@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState({
       navToggle: state => state.navToggle,
-      allMenus: state => state.allMenus
+      currentMenus: state => state.currentMenus
     })
   }
 }

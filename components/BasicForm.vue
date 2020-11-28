@@ -4,7 +4,7 @@ el-form(:model="localForm",:rules="basicformConfig.rules", :label-width="labelWi
     el-input(v-model="localForm[head.propName]", v-if="head.type == 'input'", :style="{'width': head.width || '50%'}", :placeholder="'请输入' + (head.placeholder || head.labelName)")
     el-input(v-model="localForm[head.propName]", v-else-if="head.type == 'password'", type="password", :style="{'width': head.width || '50%'}", :placeholder="'请输入' + (head.placeholder || head.labelName)")
     el-input(v-model="localForm[head.propName]", v-else-if="head.type == 'inputNumber'", type="number", :style="{'width': head.width || '50%'}", :placeholder="'请输入' + (head.placeholder || head.labelName)")
-    el-select(v-model="localForm[head.propName]", v-else-if="(head.type == 'select' && (head.dataType == 'api' || head.dataType == 'globalArray'))", :style="{'width': head.width || '50%'}", :placeholder="'请选择' + (head.placeholder || head.labelName)")
+    el-select(v-model="localForm[head.propName]", v-else-if="(head.type == 'select' && (head.dataType == 'api' || head.dataType == 'globalArray'))", :style="{'width': head.width || '50%'}", :placeholder="'请选择' + (head.placeholder || head.labelName)", @change="selectChange($event, head.propName)")
       el-option(v-for="(opts,idx) in localForm[head.listName]", :key="idx", :label="opts[head.optLbl]", :value="opts[head.optKey]")
     el-select(v-model="localForm[head.propName]", v-else-if="(head.type == 'select' && head.dataType == 'array')", :style="{'width': head.width || '50%'}", :placeholder="'请选择' + (head.placeholder || head.labelName)")
       el-option(v-if="head.dataType == 'array'", v-for="(opts, idx) in head.listArray", :key="idx", :label="opts[head.optLbl]", :value="opts[head.optKey]")
@@ -50,6 +50,8 @@ export default {
     modelForm: {
       handler: function(newVal, oldVal) {
         let keys = Object.keys(newVal)
+        console.log('keys:>>', keys)
+        this.initConfig()
         if (keys.length == 0) {
           Object.keys(this.localForm).map(itm => {
             this.localForm[itm] = ''
@@ -67,28 +69,34 @@ export default {
   beforeMount() {
     console.log('beforeMount basicform')
     this.localForm = Object.assign({}, this.modelForm)
-    let selectConfigArr = this.basicformConfig.formHeader.filter(
-      itm =>
-        itm.type == 'select' &&
-        (itm.dataType == 'api' || itm.dataType == 'globalArray')
-    )
-    if (selectConfigArr.length > 0) {
-      const me = this
-      this.localForm = Object.assign({}, this.modelForm)
-      selectConfigArr.map(itm => {
-        if (!me.localForm[itm.listName]) {
-          me.localForm[itm.listName] = []
-          if (itm.dataType === 'api') me.getSelectVal(itm)
-          if (itm.dataType === 'globalArray') me.getGlobalSelectVal(itm)
-        }
-      })
-    }
+    this.initConfig()
   },
   methods: {
+    initConfig() {
+      let selectConfigArr = this.basicformConfig.formHeader.filter(
+        itm =>
+          itm.type == 'select' &&
+          (itm.dataType == 'api' || itm.dataType == 'globalArray')
+      )
+      if (selectConfigArr.length > 0) {
+        const me = this
+        this.localForm = Object.assign({}, this.modelForm)
+        selectConfigArr.map(itm => {
+          if (!me.localForm[itm.listName]) {
+            me.localForm[itm.listName] = []
+            if (itm.dataType === 'api') me.getSelectVal(itm)
+            if (itm.dataType === 'globalArray') me.getGlobalSelectVal(itm)
+          }
+        })
+      }
+    },
     resetFormValue() {
       Object.keys(this.localForm).map(itm => {
         this.localForm[itm] = ''
       })
+    },
+    selectChange(evt, key) {
+      this.$emit('selectChange', evt, key)
     },
     async submitForm() {
       try {
@@ -97,7 +105,7 @@ export default {
         this.$emit('formSubmit', this.localForm)
       } catch (e) {
         console.error(e)
-        this.pageLoad.close()
+        // this.pageLoad.close()
       }
     },
     async getSelectVal(itm) {

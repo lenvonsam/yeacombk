@@ -2,7 +2,11 @@
 i-box(:topHidden="false", title="账户列表")
   b-table(:tableValue="tableConfig", :loading="dataLoad", @rightTopSearch="topSearch", @actionBtnClick="btnGroupClick", :total="totalRecords", @rowEdit="rowCellEdit")
   el-dialog(:visible.sync="dialogVisible", :title="'账户' + (formEditType == 1 ? '新增' : '修改')")
-    b-form(:basicformConfig="formConfig", :modelForm="acctObj", :formCancel="dialogFormCancel", :resetForm="dialogVisible", @formSubmit="formResult")
+    b-form(:basicformConfig="formConfig", :modelForm="acctObj", :formCancel="dialogFormCancel", :resetForm="dialogVisible", @formSubmit="formResult", @selectChange="formSelectChange")
+      div(slot="append", v-if="acctObj.currentBucket")
+        el-form-item(label="所属角色")
+          el-select(v-model="acctObj.role")
+            el-option(v-for="role in roleList", :label="role.name",:value="role.id", :key="role.id")
 </template>
 
 <script>
@@ -14,6 +18,7 @@ export default {
       dialogVisible: false,
       // 1 新增 2 修改
       formEditType: 1,
+      roleList: [],
       tableConfig: {
         hasCbx: true,
         tableHead: [
@@ -141,6 +146,13 @@ export default {
       this.dialogVisible = false
       this.callAccountSaveOrUpdate()
     },
+    formSelectChange(val, key) {
+      if (key === 'currentBucket') {
+        this.acctObj.currentBucket = val
+        this.roleData(val)
+        this.$forceUpdate()
+      }
+    },
     async callAccountList() {
       try {
         let { data } = await this.proxy(this, this.apiList.accounts, 'get', {
@@ -202,6 +214,9 @@ export default {
     rowCellEdit(idx, obj) {
       console.log('row index:>>', idx, '; obj:>>', obj)
       this.acctObj = Object.assign({}, obj)
+      if (this.acctObj.currentBucket && this.acctObj.currentBucket.id > 0) {
+        this.roleData(this.acctObj.currentBucket.id)
+      }
       this.formEditType = 2
       this.dialogVisible = true
     },
@@ -217,6 +232,21 @@ export default {
         this.acctObj = {}
         this.formEditType = 1
         this.dialogVisible = true
+      }
+    },
+    async roleData(bid) {
+      try {
+        const { data } = await this.proxy(
+          this,
+          this.apiList.accountRole + '?bid=' + bid
+        )
+        if (data.return_code === 0) {
+          this.roleList = data.list
+        } else {
+          this.msgShow(this, data.message)
+        }
+      } catch (e) {
+        console.log(e)
       }
     }
   }

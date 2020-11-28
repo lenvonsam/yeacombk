@@ -115,9 +115,13 @@ async function start() {
       console.log('result>>', data)
       if (body.url == APILIST.login && data.return_code == 0) {
         delete data.user.pwd
+        const u = data.user
+        if (data.permissions) {
+          u.perms = data.permissions
+        }
         ctx.session = {
           usertk: data.token,
-          currentUser: data.user
+          currentUser: u
         }
         delete data.token
       }

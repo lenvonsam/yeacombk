@@ -329,6 +329,8 @@ export default {
             menus += itm.id + ','
             if (itm.authConfig && itm.authConfig.length > 0) {
               auths += itm.authConfig.join(',') + '|'
+            } else {
+              auths += '|'
             }
             if (itm.authId) {
               authIds += itm.authId + ','
@@ -358,6 +360,7 @@ export default {
             obj.auths = auths
             obj.menus = menus
           }
+          console.log('obj', obj)
           me.proxy(me, url, 'post', obj)
             .then(({ data }) => {
               me.dialogVisible = false

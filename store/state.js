@@ -4,6 +4,7 @@ export default {
   fileUploadUrl: '/fileUpload',
   globalSuccessMsg: '',
   globalErrorMsg: '',
+  currentMenus: [],
   allMenus: [
     {
       title: '新闻管理',
