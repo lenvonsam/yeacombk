@@ -1,9 +1,14 @@
 let load = null
+let msg = null
 module.exports = {
   msgShow(context, text = '网络异常', type = 'error') {
-    context.$message({
+    if (msg) return
+    msg = context.$message({
       message: text,
-      type
+      type,
+      onClose() {
+        msg = null
+      }
     })
   },
   confirmDialog(
@@ -24,7 +29,9 @@ module.exports = {
     return context.$confirm(text, title, defaultConfig)
   },
   pageShow(context, loadText = '加载中...') {
-    if (load) this.pageHide()
+    if (load) {
+      this.pageHide()
+    }
     load = context.$loading({
       lock: true,
       text: loadText,

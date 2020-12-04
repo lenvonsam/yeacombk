@@ -20,6 +20,7 @@
             el-table-column(label="公司",prop="company")
             el-table-column(label="地点",prop="location")
             el-table-column(label="薪资",prop="salaryDescription")
+            el-table-column(label="人数",prop="personCount")
             //- el-table-column(label="标签")
               template(slot-scope="scope")
                 el-tag(v-for="itm in scope.row.tags", size="mini", type="info", :key="itm.id") {{itm.name}}

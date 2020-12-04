@@ -16,6 +16,8 @@
 						el-input(v-model="recruitObj.salaryDescription")
 					el-form-item(label="招聘要求", prop="requireDetail")
 						el-input(v-model="recruitObj.requireDetail", type="textarea", :rows="5")
+					el-form-item(label="招聘人数", prop="personCount")
+						el-input-number(v-model="recruitObj.personCount", :min="1")
 					el-form-item(label="招聘状态")
 						el-select(v-model="recruitObj.status")
 							el-option(label="草稿", value="0") 草稿
@@ -51,6 +53,7 @@ export default {
         salaryDescription: '',
         status: '0',
         requireDetail: '',
+        personCount: 1,
         factOrder: 1,
         time: this.date2Str(new Date())
       },
@@ -89,14 +92,6 @@ export default {
     }),
     editor() {
       return this.$refs.newsTextEditor.quillEditor
-    }
-  },
-  watch: {
-    recruitObj: {
-      handler(newVal, oldVal) {
-        console.log(newVal)
-      },
-      deep: true
     }
   },
   beforeMount() {
