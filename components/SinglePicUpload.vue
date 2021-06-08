@@ -2,7 +2,7 @@
   div
     el-upload(:action="fileUploadUrl",list-type="picture-card", :on-preview="handlePictureCardPreview",:before-upload="beforePicUpload",name="img", :data="{'action': 'uploadimage'}",:file-list="picList",:on-success="uploadSuccess", :on-remove="picReomve")
       i.el-icon-plus
-      .el-upload__tip(slot="tip") 只能上传jpg/png文件，且不超过1M,图片长宽建议{{picAdvice}}
+      .el-upload__tip(slot="tip") 只能上传jpg/png文件，且不超过10M,图片长宽建议{{picAdvice}}
     el-dialog(:visible.sync="dialogVisible", size="tiny", :append-to-body="isChild")
       img(width="100%", :src="dialogImageUrl")
 </template>
@@ -74,12 +74,12 @@ export default {
     },
     beforePicUpload(file) {
       var imgType = file.type === 'image/png' || file.type === 'image/jpeg'
-      var imgSize = file.size / 1000000 <= 1
+      var imgSize = file.size / 1000000 <= 10
       if (!imgType) {
         this.$message.error('上传图片格式错误!')
       }
       if (!imgSize) {
-        this.$message.error('上传图片大不能超过1M!')
+        this.$message.error('上传图片大不能超过10M!')
       }
       return imgType && imgSize
     },
